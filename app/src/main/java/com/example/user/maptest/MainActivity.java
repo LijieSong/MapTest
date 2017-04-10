@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openBaiduMap(MainActivity.this,lat,log);
+                MapUtils.openBaiduMap(MainActivity.this,"39.91516","116.403875");
             }
         });
         btn_map_gaode.setOnClickListener(new View.OnClickListener() {
@@ -234,14 +234,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openGoogleMap(MainActivity.this,lat,log);
+                MapUtils.openGoogleMap(MainActivity.this,"39.91516","116.403875");
             }
         });
         btn_map_tencent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openTencentMap(MainActivity.this,lat,log,"合肥火车站");
+                MapUtils.openTencentMap(MainActivity.this,"绿地赢海国际大厦",lat,log,"39.91516","116.403875","天安门城楼");
             }
         });
         layout.setOnClickListener(new View.OnClickListener() {

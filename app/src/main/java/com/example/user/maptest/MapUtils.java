@@ -103,18 +103,23 @@ public class MapUtils {
      * @param context 上下文的对象
      * @param fromlat  起点经度
      * @param fromlng  起点维度
-     * @param toAddress 重点地址
+     * @param toAddress 终点地址
      */
-    public static void openTencentMap(Context context, String fromlat, String fromlng, String toAddress) {
+    public static void openTencentMap(Context context, String fromAddress,String fromlat, String fromlng,String tolat,String tolng, String toAddress) {
         Intent intent;
         if (isAvilible(context, "com.tencent.map")) {//传入指定应用包名
             try {
                 intent = new Intent();
+                double[] fromDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(fromlat), Double.valueOf(fromlng));
+                double[] toDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(tolat), Double.valueOf(tolng));
                 String appName = context.getString(R.string.app_name);
-                String url = "http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord="
-                        + fromlat + "," + fromlng
-                        + "&to="+toAddress +"&tocoord=&policy=0&referer=" + appName;
-                intent.setAction(Intent.ACTION_VIEW);
+//                String url = "http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord="
+//                        + fromlat + "," + fromlng
+//                        + "&to="+toAddress +"&tocoord="+tolat+","+tolng+"&policy=1&referer=" + appName;
+                String url ="qqmap://map/routeplan?type=drive&from="+fromAddress+"&fromcoord="
+                        + fromDoubles[0] + "," + fromDoubles[1] +"&to="+toAddress+"&" +
+                        "tocoord="+toDoubles[0]+","+toDoubles[1]+"&policy=0&referer=" + appName;
+//                intent.setAction(Intent.ACTION_VIEW);
                 Uri uri = Uri.parse(url);
                 intent.setData(uri);
                 context.startActivity(intent); //启动调用
@@ -124,7 +129,7 @@ public class MapUtils {
         } else {//未安装
             //market为路径，id为包名
             //显示手机上所有的market商店
-            Toast.makeText(context, "您尚未安装百度地图", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "您尚未安装腾讯地图", Toast.LENGTH_LONG).show();
             Uri uri = Uri.parse("market://details?id=com.tencent.map");
             intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
