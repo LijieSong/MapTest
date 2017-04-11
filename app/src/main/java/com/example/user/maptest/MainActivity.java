@@ -220,28 +220,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openBaiduMap(MainActivity.this,"39.91516","116.403875");
+                MapUtils.openBaiduMap(MainActivity.this,"39.91516","116.403875","北京");
             }
         });
         btn_map_gaode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openGDMap(MainActivity.this,"39.91516","116.403875");
+                MapUtils.openGDMap(MainActivity.this,"39.91516","116.403875","北京");
             }
         });
         btn_map_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openGoogleMap(MainActivity.this,"39.91516","116.403875");
+                MapUtils.openGoogleMap(MainActivity.this,"39.91516","116.403875","北京");
             }
         });
         btn_map_tencent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
-                MapUtils.openTencentMap(MainActivity.this,"绿地赢海国际大厦",lat,log,"39.91516","116.403875","天安门城楼");
+                MapUtils.openTencentMap(MainActivity.this,"绿地赢海国际大厦",lat,log,"39.91516","116.403875","北京");
             }
         });
         layout.setOnClickListener(new View.OnClickListener() {

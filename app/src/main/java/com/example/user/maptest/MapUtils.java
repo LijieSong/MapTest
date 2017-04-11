@@ -27,12 +27,12 @@ public class MapUtils {
      * @param lat  到达的经度
      * @param lng  到达的维度
      */
-    public static void openGDMap(Context context, String lat, String lng) {
+    public static void openGDMap(Context context, String lat, String lng,String toAddress) {
         Intent intent;
         if (isAvilible(context, "com.autonavi.minimap")) {
             try {
                 String appName = context.getString(R.string.app_name);
-                intent = Intent.getIntent("androidamap://navi?sourceApplication=" + appName + "&poiname=我的目的地&lat=" + lat + "&lon=" + lng + "&dev=0");
+                intent = Intent.getIntent("androidamap://navi?sourceApplication=" + appName + "&poiname="+toAddress+"&lat=" + lat + "&lon=" + lng + "&dev=0");
                 context.startActivity(intent);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -52,9 +52,9 @@ public class MapUtils {
      * @param lat     目的地经度
      * @param lng     目的地维度
      */
-    public static void openGoogleMap(Context context, String lat, String lng) {
+    public static void openGoogleMap(Context context, String lat, String lng,String toAddress) {
         if (isAvilible(context, "com.google.android.apps.maps")) {
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat + "," + lng + ", + Sydney +Australia");
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat + "," + lng + ","+toAddress);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
             context.startActivity(mapIntent);
@@ -72,14 +72,14 @@ public class MapUtils {
      * @param lat  目的地经度
      * @param lng  目的地维度
      */
-    public static void openBaiduMap(Context context, String lat, String lng) {
+    public static void openBaiduMap(Context context, String lat, String lng,String toAddress) {
         Intent intent;
         if (isAvilible(context, "com.baidu.BaiduMap")) {//传入指定应用包名
             try {
                 String appName = context.getString(R.string.app_name);
                 intent = Intent.getIntent("intent://map/direction?" +
                         //"origin=latlng:"+"34.264642646862,108.95108518068&" +   //起点  此处不传值默认选择当前位置
-                        "destination=latlng:" + lat + "," + lng + "|name:我的目的地" +        //终点
+                        "destination=latlng:" + lat + "," + lng + "|name:" +toAddress+        //终点
                         "&mode=driving&" +          //导航路线方式
                         "region=北京" +           //
                         "&src=" + appName + "#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
@@ -103,6 +103,38 @@ public class MapUtils {
      * @param context 上下文的对象
      * @param fromlat  起点经度
      * @param fromlng  起点维度
+     * @param toAddress 重点地址
+     */
+    public static void openTencentMap(Context context, String fromlat, String fromlng, String toAddress) {
+        Intent intent;
+        if (isAvilible(context, "com.tencent.map")) {//传入指定应用包名
+            try {
+                intent = new Intent();
+                String appName = context.getString(R.string.app_name);
+                String url = "http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord="
+                        + fromlat + "," + fromlng
+                        + "&to="+toAddress +"&tocoord=&policy=0&referer=" + appName;
+                intent.setAction(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse(url);
+                intent.setData(uri);
+                context.startActivity(intent); //启动调用
+            } catch (Exception e) {
+                Log.e("intent", e.getMessage());
+            }
+        } else {//未安装
+            //market为路径，id为包名
+            //显示手机上所有的market商店
+            Toast.makeText(context, "您尚未安装百度地图", Toast.LENGTH_LONG).show();
+            Uri uri = Uri.parse("market://details?id=com.tencent.map");
+            intent = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(intent);
+        }
+    }
+    /**
+     * 打开腾讯地图并导航
+     * @param context 上下文的对象
+     * @param fromlat  起点经度
+     * @param fromlng  起点维度
      * @param toAddress 终点地址
      */
     public static void openTencentMap(Context context, String fromAddress,String fromlat, String fromlng,String tolat,String tolng, String toAddress) {
@@ -110,8 +142,8 @@ public class MapUtils {
         if (isAvilible(context, "com.tencent.map")) {//传入指定应用包名
             try {
                 intent = new Intent();
-                double[] fromDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(fromlat), Double.valueOf(fromlng));
-                double[] toDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(tolat), Double.valueOf(tolng));
+                double[] fromDoubles = map_bd2hx(Double.valueOf(fromlat), Double.valueOf(fromlng));
+                double[] toDoubles = map_bd2hx(Double.valueOf(tolat), Double.valueOf(tolng));
                 String appName = context.getString(R.string.app_name);
                 String url ="qqmap://map/routeplan?type=drive&from="+fromAddress+"&fromcoord="
                         + fromDoubles[0] + "," + fromDoubles[1] +"&to="+toAddress+"&" +
@@ -155,5 +187,48 @@ public class MapUtils {
         }
         //判断packageNames中是否有目标程序的包名，有TRUE，没有FALSE
         return packageNames.contains(packageName);
+    }
+
+    /**
+     * 坐标转换，腾讯地图（火星坐标）转换成百度地图坐标
+     * @param lat 腾讯纬度
+     * @param lon 腾讯经度
+     * @return 返回结果：经度,纬度
+     */
+    public static  double[] map_hx2bd(double lat, double lon){
+        double bd_lat;
+        double bd_lon;
+        double x_pi=3.14159265358979324;
+        double x = lon, y = lat;
+        double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+        double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+        bd_lon = z * Math.cos(theta) + 0.0065;
+        bd_lat = z * Math.sin(theta) + 0.006;
+        double[] doubles = new double[]{bd_lat,bd_lon};
+        System.out.println("bd_lat:"+bd_lat);
+        System.out.println("bd_lon:"+bd_lon);
+        return  doubles;
+    }
+
+
+
+    /**
+     * 坐标转换，百度地图坐标转换成腾讯地图坐标
+     * @param lat  百度坐标纬度
+     * @param lon  百度坐标经度
+     * @return 返回结果：纬度,经度
+     */
+    public static  double[] map_bd2hx(double lat, double lon){
+        double tx_lat;
+        double tx_lon;
+        double x_pi=3.14159265358979324;
+        double x = lon - 0.0065, y = lat - 0.006;
+        double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);
+        double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);
+        tx_lon = z * Math.cos(theta);
+        tx_lat = z * Math.sin(theta);
+
+        double[] doubles = new double[]{tx_lat,tx_lon};
+        return doubles;
     }
 }
