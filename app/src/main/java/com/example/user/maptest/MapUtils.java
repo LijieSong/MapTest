@@ -113,13 +113,9 @@ public class MapUtils {
                 double[] fromDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(fromlat), Double.valueOf(fromlng));
                 double[] toDoubles = MapTranslateUtils.map_bd2hx(Double.valueOf(tolat), Double.valueOf(tolng));
                 String appName = context.getString(R.string.app_name);
-//                String url = "http://apis.map.qq.com/uri/v1/routeplan?type=drive&from=&fromcoord="
-//                        + fromlat + "," + fromlng
-//                        + "&to="+toAddress +"&tocoord="+tolat+","+tolng+"&policy=1&referer=" + appName;
                 String url ="qqmap://map/routeplan?type=drive&from="+fromAddress+"&fromcoord="
                         + fromDoubles[0] + "," + fromDoubles[1] +"&to="+toAddress+"&" +
                         "tocoord="+toDoubles[0]+","+toDoubles[1]+"&policy=0&referer=" + appName;
-//                intent.setAction(Intent.ACTION_VIEW);
                 Uri uri = Uri.parse(url);
                 intent.setData(uri);
                 context.startActivity(intent); //启动调用
