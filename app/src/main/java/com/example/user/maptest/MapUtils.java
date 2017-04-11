@@ -153,7 +153,7 @@ public class MapUtils {
         } else {//未安装
             //market为路径，id为包名
             //显示手机上所有的market商店
-            Toast.makeText(context, "您尚未安装百度地图", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "您尚未安装腾讯地图", Toast.LENGTH_LONG).show();
             Uri uri = Uri.parse("market://details?id=com.tencent.map");
             intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
